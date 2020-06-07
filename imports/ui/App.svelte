@@ -32,6 +32,10 @@
         console.log($currentUser.username)
       }
     }
+
+  function addPoint() {
+    Meteor.call('heroes.addPoints', $selectedHero)
+  }      
 </script>
  
  
@@ -47,7 +51,10 @@
       <form on:submit|preventDefault={handleSubmit}>
         <input type="text" placeholder="Type to add a new hero" bind:value="{newHero}" />
       </form>
-      {$currentUser.username}
+      
+      {#if $currentUser} 
+        <button on:click={addPoint}>Give 5 Points</button>
+      {/if}
 
     {/if}
 

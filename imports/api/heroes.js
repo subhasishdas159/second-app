@@ -5,8 +5,11 @@ import { Mongo } from 'meteor/mongo'
 export const Heroes =  new Mongo.Collection('heroes')
 
 if(Meteor.isServer) {
+
 	Meteor.publish('publishedHeroes', function() {
-		return Heroes.find({})
+		if(this.userId) {
+			return Heroes.find({ _id: Meteor.userId })
+		}
 	})
 }
 
@@ -23,10 +26,17 @@ Meteor.methods({
 			name,
       createdAt: new Date(),
       owner: this.userId,
-      username: Meteor.users.findOne(this.userId).username
+      username: Meteor.users.findOne(this.userId).username,
+      score: 0
 		})
 
 	},
+
+	'heroes.addPoints'(id) {
+		check(id, String)
+
+		Heroes.update(id, {$inc: {score: 5}})
+	}
 
 // 	'tasks.remove'(taskId) {
 // 		check(taskId, String)

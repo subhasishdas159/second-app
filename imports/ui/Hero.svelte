@@ -18,7 +18,7 @@
 
 	<span class="text">
     <strong> { hero.username } </strong>
-    : { hero.name }
+    : { hero.name } ===> { hero.score }
   </span>
 
 </li>
