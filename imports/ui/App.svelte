@@ -9,17 +9,12 @@
 
   let newHero = ""
   let currentUser
+  let heroes
 
   onMount(async () => {
     await Meteor.subscribe('publishedHeroes')
   })
 
-    $: heroes = useTracker(() => Heroes.find({}, { sort: { createdAt: -1 } }).fetch());
-
-    const handleSubmit = (event) => {
-      Meteor.call('heroes.insert', newHero)
-      newHero = ""
-    }
     $:{
       currentUser = useTracker(() => Meteor.user())
       if($currentUser) {
@@ -30,7 +25,14 @@
     $: {
         if($currentUser) {
         console.log($currentUser.username)
+        heroes = useTracker(() => Heroes.find({}, { sort: { createdAt: -1 } }).fetch());
       }
+    }
+    
+
+    const handleSubmit = (event) => {
+      Meteor.call('heroes.insert', newHero)
+      newHero = ""
     }
 
   function addPoint() {
@@ -60,11 +62,13 @@
 
   </header>
   <ul>
-  {#each $heroes as hero (hero._id)}
-    <Hero
-      key={hero._id}
-      hero={hero}
-    />
-  {/each}
+  {#if $currentUser} 
+    {#each $heroes as hero (hero._id)}
+      <Hero
+        key={hero._id}
+        hero={hero}
+      />
+    {/each}
+  {/if}
   </ul>
 </div>
