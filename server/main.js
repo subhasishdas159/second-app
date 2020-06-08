@@ -1,1 +1,1 @@
-import '../imports/api/heroes.js'
+import '../imports/api/tasks.js'

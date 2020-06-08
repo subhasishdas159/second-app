@@ -1,43 +1,38 @@
 <script>
   import { Meteor } from 'meteor/meteor'
   import { useTracker } from 'meteor/rdb:svelte-meteor-data';
-  import { Heroes } from '../api/heroes.js'
+  import { Tasks } from '../api/tasks.js'
   import { BlazeTemplate }   from 'meteor/svelte:blaze-integration'
   import { onMount } from 'svelte'
-  import Hero from './Hero.svelte'
-  import { selectedHero } from '../api/store.js'
+  import Task from './Task.svelte'
 
-  let newHero = ""
+  let newTask = ""
   let currentUser
-  let heroes
+  let tasks
+  let checked
+  let totalTasks
 
   onMount(async () => {
-    await Meteor.subscribe('publishedHeroes')
+    await Meteor.subscribe('publishedTasks')
   })
+
+    // if(Meteor.user()) {}
 
     $:{
       currentUser = useTracker(() => Meteor.user())
       if($currentUser) {
-        heroes = useTracker(() => Heroes.find({ username: $currentUser.username }, { sort: { createdAt: -1 } }).fetch());
-      }
-    }
+        tasks = useTracker(() => Tasks.find({ _id: Meteor.userId }, { sort: { createdAt: -1 } }).fetch())
 
-    $: {
-        if($currentUser) {
-        console.log($currentUser.username)
-        heroes = useTracker(() => Heroes.find({}, { sort: { createdAt: -1 } }).fetch());
+        totalTasks = Object.keys($tasks).length
+        checked = Object.keys($tasks.filter(task => task.checked)).length
       }
     }
-    
 
     const handleSubmit = (event) => {
-      Meteor.call('heroes.insert', newHero)
-      newHero = ""
+      Meteor.call('tasks.insert', newTask)
+      newTask = ""
     }
-
-  function addPoint() {
-    Meteor.call('heroes.addPoints', $selectedHero)
-  }      
+     
 </script>
  
  
@@ -51,22 +46,21 @@
     {#if $currentUser}
 
       <form on:submit|preventDefault={handleSubmit}>
-        <input type="text" placeholder="Type to add a new hero" bind:value="{newHero}" />
+        <input type="text" placeholder="Type to add a new hero" bind:value="{newTask}" />
       </form>
       
-      {#if $currentUser} 
-        <button on:click={addPoint}>Give 5 Points</button>
-      {/if}
-
+      <p>You have completed {checked} out of {totalTasks} tasks</p>
+      
     {/if}
+
 
   </header>
   <ul>
   {#if $currentUser} 
-    {#each $heroes as hero (hero._id)}
-      <Hero
-        key={hero._id}
-        hero={hero}
+    {#each $tasks as task (task._id)}
+      <Task
+        key={task._id}
+        task={task}
       />
     {/each}
   {/if}
