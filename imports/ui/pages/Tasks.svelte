@@ -1,10 +1,12 @@
 <script>
+
   import { Meteor } from 'meteor/meteor'
   import { useTracker } from 'meteor/rdb:svelte-meteor-data';
-  import { Tasks } from '../api/tasks.js'
+  import { Tasks } from '../../api/tasks.js'
   import { BlazeTemplate }   from 'meteor/svelte:blaze-integration'
   import { onMount } from 'svelte'
-  import Task from './Task.svelte'
+  import Task from '../comps/Task.svelte'
+  import {location} from 'svelte-spa-router'
 
   let newTask = ""
   let currentUser
@@ -38,24 +40,21 @@
  
 <div class="container">
   <header>
-    <h1>Todo List</h1>
-    <br>
-
-    <BlazeTemplate template="loginButtons" />
-
+  <p>The current page is: {$location}</p>
     {#if $currentUser}
 
       <form on:submit|preventDefault={handleSubmit}>
-        <input type="text" placeholder="Type to add a new hero" bind:value="{newTask}" />
+        Create a task
+        <input type="text" placeholder="Type to add a new task" bind:value="{newTask}" />
       </form>
       
-      <p>You have completed {checked} out of {totalTasks} tasks</p>
-      
+      <p>Hello {$currentUser.username}, you have completed {checked} out of {totalTasks} tasks</p>
+
     {/if}
 
-
   </header>
-  <ul>
+
+  <ul class="todos">
   {#if $currentUser} 
     {#each $tasks as task (task._id)}
       <Task
@@ -66,3 +65,12 @@
   {/if}
   </ul>
 </div>
+
+
+<style>
+  
+ul.todos{
+  list-style-type: none;
+}
+
+</style>

@@ -11,7 +11,8 @@
     "@babel/runtime": "^7.10.2",
     "jquery": "^3.4.1",
     "meteor-node-stubs": "^1.0.0",
-    "svelte": "^3.23.0"
+    "svelte": "^3.23.0",
+    "svelte-spa-router": "^2.2.0"
   },
   "meteor": {
     "mainModule": {

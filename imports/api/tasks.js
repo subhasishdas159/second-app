@@ -54,5 +54,19 @@ Meteor.methods({
 		}
 
 		Tasks.remove(taskId)
+	},
+
+	'tasks.update'(taskId, taskName) {
+		check(taskId, String)
+
+		const task =Tasks.findOne(taskId)
+		if(task.owner !== this.userId) {
+			throw new Meteor.Error('not-authorized')
+		}
+
+		Tasks.update(taskId, {
+			$set: { name: taskName }
+		})
+
 	}
 })
