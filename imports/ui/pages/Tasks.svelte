@@ -5,7 +5,7 @@
   import { Tasks } from '../../api/tasks.js'
   import { BlazeTemplate }   from 'meteor/svelte:blaze-integration'
   import { onMount } from 'svelte'
-  import Task from '../comps/Task.svelte'
+  import Task from '../comps/Task'
   import {location} from 'svelte-spa-router'
 
   let newTask = ""
