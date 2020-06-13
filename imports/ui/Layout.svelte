@@ -2,7 +2,6 @@
   import Tasks from './pages/Tasks'
   import Dashboard from './pages/Dashboard'
   import NotFound from './pages/NotFound'
-  import Tags from './pages/Tags'
   import Router from 'svelte-spa-router'
   import Team from './pages/Team'
   import Profile from './pages/Profile'
@@ -12,8 +11,8 @@
 
   const routes = {
     '/': Dashboard,
-    '/tags': Tags,
-    '/tasks': Tasks,
+    '/dashboard': Dashboard,
+    '/tags': Tasks,
     '/team': Team,
     '/manage-tags': ManageTags,
     '/profile': Profile,

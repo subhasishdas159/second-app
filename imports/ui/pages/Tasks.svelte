@@ -7,6 +7,8 @@
   import { onMount } from 'svelte'
   import Task from '../comps/Task'
   import {location} from 'svelte-spa-router'
+  import {querystring} from 'svelte-spa-router'
+  import qs from 'simple-query-string'
 
   let newTask = ""
   let currentUser
@@ -18,29 +20,34 @@
     await Meteor.subscribe('publishedTasks')
   })
 
-    // if(Meteor.user()) {}
-
-    $:{
-      currentUser = useTracker(() => Meteor.user())
-      if($currentUser) {
-        tasks = useTracker(() => Tasks.find({ _id: Meteor.userId }, { sort: { createdAt: -1 } }).fetch())
-
-        totalTasks = Object.keys($tasks).length
-        checked = Object.keys($tasks.filter(task => task.checked)).length
-      }
+  $: {
+    if($querystring) {
+      tagId = qs.parse($querystring).tagId
+      console.log(tagId)
+      console.log(typeof($querystring))
     }
+  }
 
-    const handleSubmit = (event) => {
-      Meteor.call('tasks.insert', newTask)
-      newTask = ""
+  $:{
+    currentUser = useTracker(() => Meteor.user())
+    if($currentUser) {
+      tasks = useTracker(() => Tasks.find({ _id: Meteor.userId, tagId: tagId}, { sort: { createdAt: -1 } }).fetch())
+
+      totalTasks = Object.keys($tasks).length
+      checked = Object.keys($tasks.filter(task => task.checked)).length
     }
+  }
+
+  const handleSubmit = (event) => {
+    Meteor.call('tasks.insert', newTask, tagId)
+    newTask = ""
+  }
      
 </script>
  
  
 <div class="container">
   <header>
-  <p>The current page is: {$location}</p>
     {#if $currentUser}
 
       <form on:submit|preventDefault={handleSubmit}>
@@ -48,7 +55,7 @@
         <input type="text" placeholder="Type to add a new task" bind:value="{newTask}" />
       </form>
       
-      <p>Hello {$currentUser.username}, you have completed {checked} out of {totalTasks} tasks</p>
+      <p>Hello {$currentUser.username}, you have completed {checked} out of {totalTasks} tasks under this tag</p>
 
     {/if}
 

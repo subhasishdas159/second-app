@@ -2,13 +2,13 @@ import { Meteor } from 'meteor/meteor'
 import { check } from 'meteor/check'
 import { Mongo } from 'meteor/mongo'
 
-export const Lists =  new Mongo.Collection('lists')
+export const Tags =  new Mongo.Collection('tags')
 
 if(Meteor.isServer) {
 
-	Meteor.publish('publishedLists', function() {
+	Meteor.publish('publishedTags', function() {
 		if(Meteor.userId) {
-			return Lists.find({ owner: this.userId })
+			return Tags.find({ owner: this.userId })
 		}
 	})
 
@@ -16,15 +16,15 @@ if(Meteor.isServer) {
 
 Meteor.methods({
 
-	'lists.insert'(list) {
-		check(list, String)
+	'tags.insert'(tag) {
+		check(tag, String)
 
 		if(!this.userId) {
 			throw new Meteor.Error('not-authorized')
 		}
 
-		Lists.insert({
-			name: list,
+		Tags.insert({
+			name: tag,
       createdAt: new Date(),
       owner: this.userId,
       checked: false

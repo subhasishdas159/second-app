@@ -15,8 +15,9 @@ if(Meteor.isServer) {
 
 Meteor.methods({
 
-	'tasks.insert'(task) {
+	'tasks.insert'(task, tagId) {
 		check(task, String)
+		check(tagId, String)
 
 		if(!this.userId) {
 			throw new Meteor.Error('not-authorized')
@@ -26,7 +27,8 @@ Meteor.methods({
 			name: task,
       createdAt: new Date(),
       owner: this.userId,
-      checked: false
+      checked: false,
+      tagId: tagId
 		})
 
 	},

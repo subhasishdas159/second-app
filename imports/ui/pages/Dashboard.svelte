@@ -7,3 +7,5 @@
 <a href="#/team">team</a>
 <br>
 <a href="#/profile">profile</a>
+<br>
+<a href="#/tasks">tasks</a>
